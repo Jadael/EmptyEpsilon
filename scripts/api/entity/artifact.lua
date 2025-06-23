@@ -14,7 +14,7 @@ function Artifact()
             scale=3.0,
         },
         radar_trace = {
-            icon="radar/blip.png",
+            icon="radar/char_question.png",
             radius=120.0,
             rotate=false,
         },
