@@ -8,6 +8,7 @@
 function ScanProbe()
     local e = createEntity()
     e.components = {
+        transform = {},
         lifetime = {lifetime=60*10},
         radar_trace = {
             icon="radar/probe.png",
@@ -30,6 +31,7 @@ function ScanProbe()
             e.components[k] = table.deepcopy(v)
         end
     end
+    e.components.physics.type = "sensor"
     return e
 end
 

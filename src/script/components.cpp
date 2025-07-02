@@ -746,6 +746,8 @@ void initComponentScriptBindings()
     sp::script::ComponentHandler<Zone>::name("zone");
     BIND_MEMBER(Zone, color);
     BIND_MEMBER(Zone, label);
+    BIND_MEMBER(Zone, skybox);
+    BIND_MEMBER(Zone, skybox_fade_distance);
     sp::script::ComponentHandler<Zone>::members["points"] = {
         [](lua_State* L, const void* ptr) {
             auto zone = reinterpret_cast<const Zone*>(ptr);
