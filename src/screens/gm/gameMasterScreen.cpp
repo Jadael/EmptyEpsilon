@@ -20,12 +20,14 @@
 #include "multiplayer_server.h"
 
 #include "screenComponents/radarView.h"
+#include "screenComponents/helpOverlay.h"
 
 #include "components/ai.h"
 #include "gui/gui2_togglebutton.h"
 #include "gui/gui2_selector.h"
 #include "gui/gui2_listbox.h"
 #include "gui/gui2_label.h"
+#include "gui/gui2_panel.h"
 #include "gui/gui2_keyvaluedisplay.h"
 #include "gui/gui2_textentry.h"
 
@@ -239,6 +241,19 @@ GameMasterScreen::GameMasterScreen(RenderLayer* render_layer)
 
     });
     message_close_button->setTextSize(30)->setPosition(-20, -20, sp::Alignment::BottomRight)->setSize(300, 30);
+
+    keyboard_help = new GuiHelpOverlay(this, tr("hotkey_F1", "Keyboard Shortcuts"));
+    string keyboard_help_text = "";
+
+    for (const auto& category : {"Console", "Basic", "GM"})
+    {
+        for (auto binding : sp::io::Keybinding::listAllByCategory(category))
+        {
+            keyboard_help_text += tr("hotkey_F1", "{label}: {button}\n").format({{"label", binding->getLabel()}, {"button", binding->getHumanReadableKeyName(0)}});
+        }
+    }
+
+    keyboard_help->setText(keyboard_help_text);
 }
 
 //due to a suspected compiler bug this deconstructor needs to be explicitly defined
@@ -271,6 +286,12 @@ void GameMasterScreen::update(float delta)
     if (keys.gm_clipboardcopy.getDown())
     {
         Clipboard::setClipboard(getScriptExport(false));
+    }
+
+    if (keys.help.getDown())
+    {
+        // Toggle keyboard help.
+        keyboard_help->frame->setVisible(!keyboard_help->frame->isVisible());
     }
 
     if (keys.escape.getDown())
@@ -548,12 +569,15 @@ void GameMasterScreen::onMouseUp(glm::vec2 position)
                                 ai->orders = AIOrder::DefendTarget;
                             ai->order_target = target;
                         }
-                    }else if (auto transform = entity.getComponent<sp::Transform>()) {
+                    } else {
                         if (shift_down)
                             ai->orders = AIOrder::FlyTowardsBlind;
                         else
                             ai->orders = AIOrder::FlyTowards;
-                        ai->order_target_location = position + transform->getPosition() - objects_center;
+                        if (auto transform = entity.getComponent<sp::Transform>())
+                            ai->order_target_location = position + transform->getPosition() - objects_center;
+                        else
+                            ai->order_target_location = position;
                     }
                 }
                 if (auto gravity = entity.getComponent<Gravity>())
@@ -630,18 +654,17 @@ GameMasterChatDialog* GameMasterScreen::getChatDialog(sp::ecs::Entity entity)
 string GameMasterScreen::getScriptExport(bool selected_only)
 {
     string output;
-    std::vector<sp::ecs::Entity> objs;
-    if (selected_only)
-    {
-        objs = targets.getTargets();
+    std::vector<sp::ecs::Entity> entities;
+    if (selected_only) {
+        entities = targets.getTargets();
     }else{
-        //TODO foreach(SpaceObject, obj, space_object_list)
-        //    objs.push_back(obj->entity);
+        for(auto [entity, transform] : sp::ecs::Query<sp::Transform>()) {
+            entities.push_back(entity);
+        }
     }
 
-    for(auto e : objs)
-    {
-        string line; //TODO = obj->getExportLine();
+    for(auto entity : entities) {
+        string line = gameGlobalInfo->getEntityExportString(entity);
         if (line == "")
             continue;
         output += "    " + line + "\n";
