@@ -71,7 +71,7 @@ item:addKeyValue(_('Radar range'), '5u')
 item:addKeyValue(_('Typical lifetime'), _('10 minutes'))
 item:addKeyValue(_('Interaction'), _('Systems link'))
 item:setImage('radar/probe.png')
-item:setModelDataName('SensorBuoyMkI')
+item:setModelDataName('SensorBuoyMKI')
 item:setLongDescription(_([[Whether your mission involves scientific investigation, deep-space exploration, or military operations, remember to take advantage of any scan probes distributed for your ship.
 
 Your Relay officer can launch a probe to any coordinates in their sector map, which fires its payload at high velocity directly toward the target coordinates. Upon arrival, Relay can then link the probe to the Science officer, who can switch their long-range radar to the probe's short-range radar.
@@ -106,6 +106,17 @@ weapons:setLongDescription(_([[This database covers only the basic versions of m
 It has been reported that some battleships started using larger variations of those missiles. Small fighters and even frigates should not have too much trouble dodging them, but space captains of bigger ships should be wary of their doubled damage potential.
 
 Smaller variations of these missiles have become common in the galaxy, too. Fighter pilots praise their speed and maneuverability, because it gives them an edge against small and fast-moving targets. They only deal half the damage of their basic counterparts, but what good is a missile if it does not hit its target.]]))
+
+local item = weapons:addEntry(_('Beam weapons'))
+item:addKeyValue(_('Range'), 'Varies')
+item:addKeyValue(_('Damage'), 'Varies')
+item:setLongDescription(_([[Beam weapons emit an instantaneous, focused burst of energy or matter at a single target within a target arc. Many ships equip beam weapons for their precision and versatility.
+
+Shields are generally effective against energy-based beam weapons. To combat this, a beam's output can be modulated to various frequencies. This allows beam weapons to be tuned to a target's shield frequency to maximize their effectiveness.
+
+Each firing of a beam weapon begins a brief cycle period, during which the beam cannot fire again. Damage to the system increases this delay while also reducing its output. Beam firings also generate heat above and beyond the system's normal operating temperature. In heavy combat situations, a ship's engineers must dissipate this heat to prevent inflicting damage on the system.
+
+On some ships, heavy beam weapons are mounted on turrets that can rotate to cover a wide firing arc, at an expense of targeting speed.]]))
 
 local item = weapons:addEntry(_('Homing missile'))
 item:addKeyValue(_('Range'), '5.4u')
